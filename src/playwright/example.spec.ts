@@ -1,10 +1,10 @@
 import { test, expect } from '@playwright/test';
-import { clickCheckboxOnk6 } from '../pages/example-page';
+import { clickSlots } from '../pages/example-page';
 
-test('checkbox should have been clicked', async ({ page }) => {
-  await clickCheckboxOnk6(page);
+test('slots should open', async ({ page }) => {
+  await clickSlots(page);
 
-  const checkBox = page.locator('#checkbox-info-display');
+  const mainTitle = page.locator('.main-banner-title');
 
-  await expect(checkBox).toHaveText('Thanks for checking the box');
+  await expect(mainTitle).toHaveText('100% Welcome Offer up to 1 BTC');
 });

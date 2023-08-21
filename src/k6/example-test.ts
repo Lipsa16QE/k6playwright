@@ -1,7 +1,7 @@
 import { check } from 'k6';
 import { Options } from 'k6/options';
 import { chromium } from 'k6/experimental/browser';
-import { clickCheckboxOnk6 } from '@pages/example-page';
+import { clickSlots } from '../pages/example-page';
 
 
 export let options: Options = {
@@ -16,10 +16,10 @@ export default async function () {
     const context = browser.newContext();
     const page = context.newPage();
     try {
-        await clickCheckboxOnk6(page);
+        await clickSlots(page);
         check(page, {
-            'checkbox is checked': (p) =>
-                p.locator('#checkbox-info-display').textContent() === 'Thanks for checking the box',
+            'slots should open': (p) =>
+                p.locator('.main-banner-title').textContent() === '100% Welcome Offer up to 1 BTC',
         });
     } finally {
         page.close();
