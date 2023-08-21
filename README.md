@@ -90,9 +90,7 @@ export async function clickSlots(page: Page) {
 
 ### Create a repository using this template
 
-To generate a TypeScript project that includes the dependencies and initial configuration, click **Use this template** on this repository.
-
-![](docs/use-this-template-button.png)
+git clone -https://github.com/Lipsa16QE/k6playwright.git
 
 ### Install dependencies
 
