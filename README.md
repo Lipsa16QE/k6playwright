@@ -125,6 +125,21 @@ This command does the following things:
 - Transpiles the Typescript files from `./src` to Javascript test files in the `./dist` folder using `Babel` and `Webpack` (you can also do this separately using `npm run build`). [Learn more](https://k6.io/docs/using-k6/modules#bundling-node-modules)
 - Runs the provided transpiled test with k6 using the Dockerfile and docker-compose, which will mount the `./dist` folder to `/dist`, making the tests in there available for the container.
 
+Generating HTML Report:
+To generate the HTML Report we need to make use of the k6-reporter library.
+
+First we import the htmlReport reference from k6-reporter and then export handleSummary() function
+
+```javascript
+import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
+
+export function handleSummary(data) {
+  return {
+    "summary.html": htmlReport(data),
+  };
+}
+```
+
 ### Assumptions
 
 - The tests need to have the "_test_" word in the name to distinguish them from auxiliary files. You can change the entry [here](./webpack.config.js#L8).
