@@ -27,51 +27,64 @@ Because xk6-browser roughly adheres to Playwright's browser API, this enables yo
 
 ## Example
 
-`src/k6/example-test.ts`
+`src/k6/sample-test.ts`
 
 ```Typescript
+import { browser } from 'k6/experimental/browser';
 import { check } from 'k6';
-import { Options } from 'k6/options';
-import { chromium } from 'k6/experimental/browser';
-import { clickCheckboxOnk6 } from '@pages/example-page';
+import { clickSlots } from '../pages/example-page';
 
-
-export let options: Options = {
-    vus: 1,
-    duration: '10s'
-};
+export const options = {
+    vus: 10,
+    maxRedirects: 20,
+    scenarios: {
+        ui: {
+            executor: 'shared-iterations',
+            vus: 10,
+            iterations: 200,
+            options: {
+                browser: {
+                    type: 'chromium',
+                    headless: 'true',
+                },
+            },
+        },
+    },
+    thresholds: {
+        checks: ["rate==1.0"]
+    }
+}
 
 export default async function () {
-    const browser = chromium.launch({
-        headless: true, args: ['no-sandbox']
-    });
     const context = browser.newContext();
-    const page = context.newPage();
-       try {
-        await clickSlots(page);
+    let page = context.newPage();
+
+    try {
+        await Promise.all([
+            await clickSlots(page)
+        ])
         check(page, {
             'slots should open': (p) =>
-                p.locator('.main-banner-title').textContent() === '100% Welcome Offer up to 1 BTC',
+                p.locator('#cartur').textContent() === 'Cart',
         });
     } finally {
         page.close();
-        browser.close();
     }
-};
+}
 ```
 
 `src/playwright/example.spec.ts`
 
 ```Typescript
 import { test, expect } from '@playwright/test';
-import { clickCheckboxOnk6 } from '@pages/example-page';
+import { clickSlots } from '../pages/example-page';
 
 test('slots should open', async ({ page }) => {
   await clickSlots(page);
 
-  const mainTitle = page.locator('.main-banner-title');
+  const mainTitle = page.locator('#cartur');
 
-  await expect(mainTitle).toHaveText('100% Welcome Offer up to 1 BTC');
+  await expect(mainTitle).toHaveText('Cart');
 });
 ```
 
@@ -81,8 +94,7 @@ test('slots should open', async ({ page }) => {
 import type { Page } from "@playwright/test/types/test";
 
 export async function clickSlots(page: Page) {
-    await page.goto('https://empire.io/', { waitUntil: 'networkidle' })
-    page.locator('//span[@data-translation="casino.menu_item.video-slots"]').click();
+    await page.goto('https://www.demoblaze.com/', { waitUntil: 'networkidle' })
 }
 ```
 
